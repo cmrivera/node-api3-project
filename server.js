@@ -16,7 +16,7 @@ server.use(userRouter);
 server.use(postRouter);
 
 function logger(req, res, next) {
-  console.log(`${req.method} Request ${req.url} [${newDate().toISOString()}]`);
+  console.log(`${req.method} Request ${req.url} [${new Date().toISOString()}]`);
   next();
 }
 
