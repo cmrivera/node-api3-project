@@ -3,11 +3,14 @@ const Posts = require("./postDb");
 const Users = require("../users/userDb");
 const router = express.Router();
 
+//router.get request for posts with user id, display post
+
 router.get("/:id/posts", validatePostId, (req, res) => {
   // do your magic!
   res.status(200).json(req.post);
 });
 
+//router.get request to pull all post, display post or 500 if not successful
 router.get("/", (req, res) => {
   // do your magic!
   Posts.get()
@@ -22,6 +25,8 @@ router.get("/", (req, res) => {
     });
 });
 
+//router.delete request for specific user with id and for specific post with post id
+//if/else statement for if id post found (200) or not (404)
 router.delete("/users/:id/posts/:id", validatePostId, (req, res) => {
   // do your magic!
   Posts.remove(req.post.id)
@@ -40,8 +45,10 @@ router.delete("/users/:id/posts/:id", validatePostId, (req, res) => {
     });
 });
 
+//router.put request to update specific post with id
+//if/else statement to req id and body and what happens if not succesful (500, 404)
 router.put(
-  "/:id",
+  "/users/:id/posts/:id",
   validatePostId,
   /*validatePost,*/ (req, res) => {
     // do your magic!
@@ -72,6 +79,7 @@ router.put(
 
 // custom middleware
 
+//function to get post by id. if right post post is validated else send 400 and or 500
 function validatePostId(req, res, next) {
   // do your magic!
   const { id } = req.params;

@@ -3,6 +3,7 @@ const Users = require("./userDb");
 const Posts = require("../posts/postDb");
 const router = express.Router();
 
+// router.post req to add a user. if no error send 201 if err send 500
 router.post("/users/", validateUser, (req, res) => {
   // do your magic!
   Users.insert(req.body)
@@ -17,6 +18,8 @@ router.post("/users/", validateUser, (req, res) => {
     });
 });
 
+//router.post rquest for post, req user id and post id.
+//if req met display posts of specific user, if not send err mess
 router.post("/users/:id/posts", validateUserId, validatePost, (req, res) => {
   // do your magic!
   Posts.insert(req.post)
@@ -31,6 +34,7 @@ router.post("/users/:id/posts", validateUserId, validatePost, (req, res) => {
     });
 });
 
+//router. get request to get all users. if req works display users, if not give err 500
 router.get("/users", (req, res) => {
   // do your magic!
   Users.get()
@@ -45,11 +49,14 @@ router.get("/users", (req, res) => {
     });
 });
 
+//router.get request to find specific user with id, if met display specific user
 router.get("/users/:id", validateUserId, (req, res) => {
   // do your magic!
   res.status(200).json(req.user);
 });
 
+//router.get request to get posts of specific user
+//if specific user id met pull up posts, if not catch err and send 500
 router.get("/users/:id/posts", validateUserId, (req, res) => {
   // do your magic!
   Users.getUserPosts(req.user.id)
@@ -64,17 +71,13 @@ router.get("/users/:id/posts", validateUserId, (req, res) => {
     });
 });
 
+//router.delete req to delete specific user with id req.  if succesful remove user, if not send 500
 router.delete("/users/:id", validateUserId, (req, res) => {
   // do your magic!
   Users.remove(req.user.id)
     .then((count) => {
       if (count > 0) {
         res.status(200).json(req.user);
-        // res
-        //   .status(200)
-        //   .json({
-        //     message: `The user whith ${req.params.id} id has been deleted`,
-        //   });
       } else {
         res.status(404).json({ message: "The user could not be found" });
       }
@@ -87,23 +90,11 @@ router.delete("/users/:id", validateUserId, (req, res) => {
     });
 });
 
+//router.put request to update specific user qwith id.  req id and bbody .  if id found display user, display errors if cant update user , 404 and 500
 router.put("/users/:id", validateUserId, validateUser, (req, res) => {
   // do your magic!
   Users.update(req.user.id, req.body)
     .then((count) => {
-      // count ?
-      // Users.getById(req.user.id)
-      // .then((user) => {
-      //   res.status(200).json(user);
-      // })
-      // .catch((err) => {
-      //   req
-      //     .status(500)
-      //     .json({ message: "An error occured during getting user" });
-      // })
-      // :
-      // res.status(404).json({ message: "The user could not be found" })
-      //----------------------------------
       if (count) {
         Users.getById(req.user.id)
           .then((user) => {
@@ -128,6 +119,7 @@ router.put("/users/:id", validateUserId, validateUser, (req, res) => {
 
 //custom middleware
 
+//validate user function . req id params, if user found go to next step if not send mess for fail to find user
 function validateUserId(req, res, next) {
   // do your magic!
   const { id } = req.params;
@@ -146,6 +138,7 @@ function validateUserId(req, res, next) {
     });
 }
 
+//function tto validate user require body for name, if given pull  up user and go to next step,  if no name body given give 400 message
 function validateUser(req, res, next) {
   // do your magic!
   if (!isEmpty(req.body)) {
@@ -159,6 +152,7 @@ function validateUser(req, res, next) {
   }
 }
 
+//function validatepost .  require post body. if no text written in body send missing text message.  if text not missing go to next step
 function validatePost(req, res, next) {
   // do your magic!
   if (!isEmpty(req.body)) {
@@ -175,6 +169,8 @@ function validatePost(req, res, next) {
     res.status(400).json({ message: "missing post data" });
   }
 }
+
+//isEmpty function for req,body if no text added.
 function isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
